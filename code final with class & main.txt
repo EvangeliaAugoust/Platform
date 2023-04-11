@@ -1,0 +1,862 @@
+package com.company;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.lang.*;
+import java.io.IOException;
+
+/***
+ * This class implements the app using the command line interface.
+ */
+
+class Main {
+
+
+    public static ArrayList<Provider> ProviderName;
+    /**
+     * This function creates a new object of the class Accommodation
+     */
+
+    static Accommodation  room = new Accommodation(false, false, 50, 110, 6,1);
+
+    /***
+     * This function creates a new object of the class Accommodation
+     */
+    static Accommodation flat = new Accommodation(false,true,80,90,3,0);
+
+    /***
+     * This function creates a new object of the class Accommodation
+     */
+    static Accommodation maisonette = new Accommodation(true,false,100,400,15,0);
+
+    /***
+     * This function creates a new object of the class Accommodation
+     */
+    static Accommodation room2 = new Accommodation(true,true,30,60,5,0);
+
+    /***
+     * This method displays a welcome message to the user asking him if he wants to log in using his username and password.
+     */
+
+    public static void Register_Login() throws IOException {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("************************************************************************");
+        System.out.println("\t\t\t\tΚαλώς ήρθατε στο booking.com");
+        System.out.println("Πείτε μας αν θέλετε να κάνετε σύνδεση ή εγγραφή πληκτρολογώντας login ή register αντίστοιχα");
+        String user = scan.nextLine();
+        if (user.equals("register")) {
+            System.out.println("\t\t\t\t\tΠείτε μας αν θέλετε να είστε πελάτης ή παροχος πληκτρολογόντας Customer ή Provider αντίστοιχα:");
+            String role = scan.nextLine();
+            if (role.equals("Provider")) {
+
+
+                System.out.println("\t\t\t\t\tΔώστε το username σας:");
+                String username2 = scan.nextLine();
+                String NewProvider = "C:\\Users\\evabr\\Desktop\\New Provider.txt";
+                String users = "C:\\Users\\evabr\\Desktop\\users.txt";
+                String Provider = "C:\\Users\\evabr\\Desktop\\Providers and Customers.txt";
+                WriteToFile(" " + username2 + " ", Provider);
+                WriteToFile(" " + username2 + " ", users);
+                WriteToFile(" " + username2 + " ", NewProvider);
+                System.out.println("\t\t\t\t\tΔώστε το password σας:");
+                String password2 = scan.nextLine();
+                WriteToFile(password2 + " ", users);
+                System.out.println("\t\t\t\t\tΔώστε την διέθυνσή σας:");
+                String address = scan.nextLine();
+                WriteToFile(address, Provider);
+                System.out.println("\t\t\t\t\tΗ εγγραφή σας ολοκληρώθηκε επιτυχώς\n");
+                System.out.println("\t\t\t\t\tΜπορείτε να πραγματοποιήσετε σύνδεση στο σάιτ.\n");
+            } else if (role.equals(("Customer"))) {
+                System.out.println("\t\t\t\t\tΔώστε το username σας:");
+                String username2 = scan.nextLine();
+                String Customer = "C:\\Users\\evabr\\Desktop\\Providers and Customers.txt";
+                String NewCustomer = "C:\\Users\\evabr\\Desktop\\New Customer.txt";
+                String users = "C:\\Users\\evabr\\Desktop\\users.txt";
+                WriteToFile(" " + username2 + " ", NewCustomer);
+                WriteToFile(" " + username2 + " ", Customer);
+                WriteToFile(" " + username2 + " ", users);
+                System.out.println("\t\t\t\t\tΔώστε το password σας:");
+                String password2 = scan.nextLine();
+                WriteToFile(password2 + " ", users);
+                System.out.println("\t\t\t\t\tΔώστε την διέθυνσή σας:");
+                String address = scan.nextLine();
+                WriteToFile(address, Customer);
+                System.out.println("\t\t\t\t\tΗ εγγραφή σας ολοκληρώθηκε επιτυχώς\n");
+            }
+            else{System.out.println("Έχετε κάνει κάποιο λάθος στην πληκτρολόγηση. Πληκτρολογήστε εκ νέου login ή register");
+                System.exit(0);}
+
+        }
+        else if (user.equals("login")) {
+            System.out.println("\t\t\t\t\tΔώστε το username σας:");
+            String username = scan.nextLine();
+            System.out.println("\t\t\t\t\tΔώστε το password σας:");
+            String password = scan.nextLine();
+
+            FindWordFromFile(username, password);
+            Main.options();
+        } else {
+            System.out.println("Έχετε κάνει κάποιο λάθος στην πληκτρολόγηση. Πληκτρολογήστε εκ νέου login ή register αν θέλετε να πραγματοποιήσετε σύνδεση ή εγγραφή αντίστοιχα");
+            System.exit(0);}
+
+
+    }
+
+    public static void options() throws IOException {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Πείτε μας αν είστε νέος πάροχος ή νέος πελάτης στην σελίδα μας πληκτρολογώντας New Provider ή New Customer αντίστοιχα.");
+        System.out.println("αν δεν είστε νεός στην σελίδα μας πληκτρολογήστε Provider, Customer ή Admin εάν είστε πάροχος , πελάτης ή διαχειρηστής αντίστοιχα");
+        String role = scan.nextLine();
+        if (role.equals("New Customer")) {
+            //ReadLineByLine("profile");
+            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\evabr\\Desktop\\New Customer.txt"))) {
+
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+                System.out.println("\t\t\t\tΑν θα θέλατε να αναζήσετε καταλύματα με βάση κάποια κριτήρια πληκτρολογήστε discover");
+                String choice = scan.nextLine();
+                if (choice.equals(("discover"))){}
+            }
+
+        }
+        if (role.equals("Customer")) {
+            System.out.println("\t\t\t\tΣτοιχεία Προφίλ : 'Ονομα : peter , Διεύθυνση : Ιασσωνίδου 14 , Κρατήσεις : 1 , Ακυρώσεις : 0 ");
+            System.out.println("\t\t\t\tΑν θα θέλατε να ακυρώσετε κράτηση πληκτρολογήστε cancel");
+            System.out.println("\t\t\t\tΑν θα θέλατε να αναζήσετε καταλύματα με βάση κάποια κριτήρια πληκτρολογήστε discover");
+            String choice = scan.nextLine();
+            if (choice.equals(("cancel"))) {}
+            if (choice.equals(("discover"))){
+                System.out.println("\t\t\t\tΚαλώς ήρθατε στο μενού της αναζήτησης των καταλυμάτων");
+                //Scanner keyboard2 = new Scanner(System.in);
+                System.out.println("Διάλεξε μία κατώτατη τιμή");
+                int MinPrice = Integer.parseInt(scan.nextLine());
+                System.out.println("Διάλεξε μία ανώτατη τιμή");
+                int MaxPrice = Integer.parseInt(scan.nextLine());
+                System.out.println("\t\t\t\tΠληκτρολογήστε με true ή false αν θέλετε να έχει parking ή οχι");
+                String temp2 = scan.nextLine();
+                System.out.println("\t\t\t\tΠόσες ημέρες θα θέλατε να μείνετε");
+                int availability = Integer.parseInt(scan.nextLine());
+                System.out.println("\t\t\t\tΠληκτρολογήστε με true ή false αν θέλετε να έχει wifi ή οχι");
+
+                String temp = scan.nextLine();
+
+                if (temp.equals("true") && temp2.equals("true")) {
+
+                    room.setWifi(true);
+                    room.setParking(true);
+                    room2.setWifi(true);
+                    room2.setParking(true);
+                    flat.setWifi(true);
+                    flat.setParking(true);
+                    maisonette.setWifi(true);
+                    maisonette.setParking(true);
+
+                } else {
+                    room.setWifi(false);
+                    room.setParking(false);
+                    room2.setWifi(false);
+                    room2.setParking(false);
+                    flat.setWifi(false);
+                    flat.setParking(false);
+                    maisonette.setWifi(false);
+                    maisonette.setParking(false);
+                }
+                if ((room.getPrice() > MinPrice) && (room.getPrice() < MaxPrice) && (availability <= room.getAvailability()) && (room.hasParking()) && (room.hasWifi()))
+                {
+                    System.out.println("\t\t\t\tΒρήκαμε το διαθέσιμο κατάλυμα!");
+                    System.out.println("\t\t\t\tΠληκτρολογήστε με yes ή no αν θέλετε να κάνετε κράτηση ή όχι");
+
+
+                    String reservation = scan.nextLine();
+                    if (reservation.equals("yes")) {
+                        room.setReservations(1);
+                        System.out.println("\t\t\t\tΗ κράτηση ολοκληρώθηκε επιτυχώς");
+                    }
+
+                } else if((room2.getPrice() > MinPrice) && (room2.getPrice() < MaxPrice) && (availability <= room2.getAvailability()) && (room2.hasParking()) && (room2.hasWifi()))
+                {
+                    System.out.println("\t\t\t\tΒρήκαμε το διαθέσιμο κατάλυμα!");
+                    System.out.println("\t\t\t\tΠληκτρολογήστε με yes ή no αν θέλετε να κάνετε κράτηση ή όχι");
+
+
+                    String reservation3 = scan.nextLine();
+                    if (reservation3.equals("yes")) {
+                        room2.setReservations(0);
+                        System.out.println("\t\t\t\tΗ κράτηση ολοκληρώθηκε επιτυχώς");
+                    } else if((flat.getPrice() > MinPrice) && (flat.getPrice() < MaxPrice) && (availability <= flat.getAvailability()) && (flat.hasParking()) && (flat.hasWifi()))
+                    {
+                        System.out.println("\t\t\t\tΒρήκαμε το διαθέσιμο κατάλυμα!");
+                        System.out.println("\t\t\t\tΠληκτρολογήστε με yes ή no αν θέλετε να κάνετε κράτηση ή όχι");
+
+
+                        String reservation2 = scan.nextLine();
+                        if (reservation2.equals("yes")) {
+                            flat.setReservations(0);
+                            System.out.println("\t\t\t\tΗ κράτηση ολοκληρώθηκε επιτυχώς");
+                        }
+                    } else if ((maisonette.getPrice() > MinPrice) && (maisonette.getPrice() < MaxPrice) && (availability <= maisonette.getAvailability()) && (maisonette.hasParking()) && (maisonette.hasWifi()))
+                    {
+                        System.out.println("\t\t\t\tΒρήκαμε το διαθέσιμο κατάλυμα!");
+                        System.out.println("\t\t\t\tΠληκτρολογήστε με yes ή no αν θέλετε να κάνετε κράτηση ή όχι");
+
+
+                        String reservation2 = scan.nextLine();
+                        if (reservation2.equals("yes")) {
+                            maisonette.setReservations(0);
+                            System.out.println("\t\t\t\tΗ κράτηση ολοκληρώθηκε επιτυχώς");
+                        }
+                    }
+                }
+
+                else {
+                    System.out.println("\t\t\t\tΛυπούμαστε αλλά δεν υπάρχει διαθέσιμο κατάλυμα με αυτά τα κριτήρια.");
+                }
+            }}
+
+        if(role.equals("New Provider")){
+            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\evabr\\Desktop\\New Provider.txt"))) {
+
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                } }
+            for(int i=0;i<100;i++){
+                System.out.println("Αν θέλετε πραγμοτοποιήστε νέα καταχώρηση καταλυματος πληκτρολογήστε add ");
+                String choice = scan.nextLine();
+                if(choice.equals("add")){create_accommodation();
+                    System.out.println("Αν θέλετε να πραγματοποιήσετε νέα καταχώρηση πληκτρολογήστε continue αλλιώς πληκτρολογήστε break");
+                    String choice3= scan.nextLine();
+                    if (choice3.equals("break"))
+                    {break;}}}
+        }
+        if (role.equals("Provider")) {
+            System.out.println("\t\t\t\tΣτοιχεία Προφίλ : 'Ονομα : bella , Έδρα : Αριστοτέλους 87 ");
+            System.out.println("\t\t\t\tΤα καταχωρημένα καταλυματά σας είναι τα εξής : ");
+            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\evabr\\Desktop\\accommodations.txt"))) {
+
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                } }
+            for(int i=0;i<100;i++){
+                System.out.println("\t\t\t\tΑν θα θέλατε να κάνετε επεξεργασία τα καταλυματά σας πληκτρολογήστε change");
+                System.out.println("\t\t\t\tΑν θα θέλατε να κάνετε διαγραφή ένα κατάλυμα πληκτρολογήστε delete");
+                System.out.println("\t\t\t\tΑν θα θέλατε να κάνετε νέα καταχώρηση καταλύματος πληκτρολογήστε add");
+                String choice = scan.nextLine();
+                if (choice.equals("delete"))
+
+                { System.out.println("Επέλεξε ποιο κατάλυμα θες να κάνεις διαγραφή , πληκτρολογώντας 1,2,3,4 αντίστοιχα.");
+
+                    int number = Integer.parseInt(scan.nextLine());
+                    if (number==1){ Path path = Paths.get("C:\\Users\\evabr\\Desktop\\accommodations.txt");
+                        Charset charset = StandardCharsets.UTF_8;
+                        String content = new String(Files.readAllBytes(path), charset);
+                        content = content.replace("room","Αυτό το κατάλυμα έχει αφαιρεθεί από τον πάροχο");
+                        Files.write(path, content.getBytes(charset));}
+                    if (number==2){ Path path = Paths.get("C:\\Users\\evabr\\Desktop\\accommodations.txt");
+                        Charset charset = StandardCharsets.UTF_8;
+                        String content = new String(Files.readAllBytes(path), charset);
+                        content = content.replace("room2","Αυτό το κατάλυμα έχει αφαιρεθεί από τον πάροχο");
+                        Files.write(path, content.getBytes(charset));}
+                    if (number==3){ Path path = Paths.get("C:\\Users\\evabr\\Desktop\\accommodations.txt");
+                        Charset charset = StandardCharsets.UTF_8;
+                        String content = new String(Files.readAllBytes(path), charset);
+                        content = content.replace("flat","Αυτό το κατάλυμα έχει αφαιρεθεί από τον πάροχο");
+                        Files.write(path, content.getBytes(charset));}
+                    if (number==4){ Path path = Paths.get("C:\\Users\\evabr\\Desktop\\accommodations.txt");
+                        Charset charset = StandardCharsets.UTF_8;
+                        String content = new String(Files.readAllBytes(path), charset);
+                        content = content.replace("maisonette","Αυτό το κατάλυμα έχει αφαιρεθεί από τον πάροχο");
+                        Files.write(path, content.getBytes(charset));}
+                    System.out.println("Η διαγραφή ολοκληρώθηκε με επιτυχία");
+
+                }
+                if (choice.equals(("change"))) {
+                    System.out.println("Επέλεξε σε ποιο κατάλυμα θες να κάνεις τις αλλάγες , πληκτρολογώντας 1,2,3,4 αντίστοιχα.");
+                    int number = Integer.parseInt(scan.nextLine());
+                    System.out.println("Γράψτε το χαρακτηριστικό που θέλετε να αντικαταστήσετε στην εξής μορφή: 'χαρακτηριστικο : τιμη'. Για παράδειγμα αν θέλετε να αλλάξετε την τιμή " +
+                            "πληκτρολογήστε 'price : 80.0'");
+                    String price = scan.nextLine();
+                    System.out.println("Γράψτε το νέο χαρακτηριστικό που θέλετε να προσθέσετε στην εξής μορφή: 'χαρακτηριστικο : τιμη'. Για παράδειγμα αν θέλετε να εισάγετε μία νέα τιμή " +
+                            "πληκτρολογήστε 'price : 100.0'");
+                    String price2 = scan.nextLine();
+                    Path path = Paths.get("C:\\Users\\evabr\\Desktop\\accommodations.txt");
+                    Charset charset = StandardCharsets.UTF_8;
+                    String content = new String(Files.readAllBytes(path), charset);
+                    content = content.replace(price,price2);
+                    Files.write(path, content.getBytes(charset));
+                    System.out.println("Η αλλαγή ολοκληρώθηκε με επιτυχία");
+                }
+                if (choice.equals(("add"))) {
+                    System.out.println("\t\t\t\tΕδώ μπορείτε να κάνετε νέα προσθήκη καταλύματος");
+                    create_accommodation();}
+
+                System.out.println("Αν θέλετε να συνεχίσετε με τις επιλογές πληκτρολογήστε continue αλλιώς πληκτρολογήστε break");
+                String choice3= scan.nextLine();
+                if (choice3.equals("break"))
+                {System.exit(0);}
+
+            }}
+        if (role.equals("Admin")) {
+            System.out.println("\t\t\t\tΣτοιχεία Προφίλ : 'Ονομα : mike ");
+            for (int i = 0; i < 100; i++) {
+                System.out.println("Αν θα θέλατε να δείτε τα υπάρχοντα καταλύματα πληκτρολογήστε accommodations");
+                System.out.println("Αν θα θέλατε να δείτε τους χρήστες πληκτρολογήστε users");
+                System.out.println("Αν θα θέλατε να δείτε τα νέα αιτήμματα νέων χρηστών στην ιστοσελίδα πληκτρολογήστε requests");
+                String choice = scan.nextLine();
+                if (choice.equals(("accommodations"))) {
+                    System.out.println("\t\t\t\tΤα καταχωρημένα καταλυματά είναι τα εξής : ");
+                    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\evabr\\Desktop\\accommodations.txt"))) {
+
+                        String line = null;
+                        while ((line = br.readLine()) != null) {
+                            System.out.println(line);
+                        }
+                    }
+                }
+                if (choice.equals(("users"))) {
+                    System.out.println("\t\t\t\t Οι ενεργοί χρήστες είναι οι εξής : ");
+                    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\evabr\\Desktop\\Providers and Customers.txt"))) {
+
+                        String line = null;
+                        while ((line = br.readLine()) != null) {
+                            System.out.println(line);
+                        }
+                    }
+                }
+                if (choice.equals(("requests"))) {
+                    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\evabr\\Desktop\\New Customer.txt"))) {
+
+                        String line = null;
+                        while ((line = br.readLine()) != null) {
+                            System.out.println(line);
+                        }
+                    }
+                }
+                try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\evabr\\Desktop\\New Provider.txt"))) {
+
+                    String line = null;
+                    while ((line = br.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                }
+
+
+                System.out.println("Αν θέλετε να συνεχίσετε με τις επιλογές πληκτρολογήστε continue αλλιώς πληκτρολογήστε break");
+                String choice3 = scan.nextLine();
+                if (choice3.equals("break")) {
+                    //break;
+                    System.exit(0);
+                }
+            }
+
+        }
+
+        else {
+            System.out.println("Έχετε κάνει κάποιο λάθος στην πληκτρολόγηση. Πληκτρολογήστε εκ νέου login ή register αν θέλετε να πραγματοποιήσετε σύνδεση ή εγγραφή αντίστοιχα");
+            System.exit(0);}
+    }
+
+
+    public static void FindWordFromFile(String word, String word_2) throws IOException
+    {
+
+        boolean flag = false;
+        Scanner sc2 = new Scanner(new FileInputStream("C:\\Users\\evabr\\Desktop\\users.txt"));
+        while (sc2.hasNextLine()) {
+            String line = sc2.nextLine();
+
+            if (line.contains(word) && line.contains(word_2)) {
+                flag = true; }
+
+        }
+
+        if (flag)
+        {
+            System.out.print("\t\t\t\tΗ σύνδεση σας πραγματοποιήθηκε με επιτυχία.\n");
+        } else {
+            System.out.print("Λάθος username ή password.\n");
+            System.exit(0);
+        }
+
+    }
+
+
+
+
+    /***
+     * This method prompts the user into choosing his role:
+     *
+     * 1) Provider
+     * 2) Customer
+     * 3) Admin
+     *
+     * for role (1) : register accommodations
+     * for role (2) : search for accommodations with specific criteria and has the ability to do reservations
+     * for role (3) : display the current reservations
+     *
+     */
+
+    public static void WriteToFile(String message, String filename)
+    {
+        try {
+            FileWriter myWriter = new FileWriter(filename,true);
+            myWriter.write(message);
+            myWriter.close();
+
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            //e.printStackTrace();
+        }
+    }
+
+    public static void WriteToFile_2(double number, String filename_2)
+    {
+        try {
+            FileWriter myWriter = new FileWriter( filename_2,true);
+            myWriter.write(String.valueOf(number));
+            myWriter.close();
+
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            //e.printStackTrace();
+        }
+    }
+
+    public static void create_accommodation() throws IOException {
+        final String dataFile = "C:\\Users\\evabr\\Desktop\\rooms.txt\\";
+        Scanner sc = new Scanner(System.in);
+        String [] name = new String[5];
+        int [] price = new int[5];
+        int [] size = new int[5];
+        String [] parking = new String[5];
+        String [] wifi = new String[5];
+        String [] providers_name = new String[5];
+        for (int n=0;n<1;n++)
+        {
+            System.out.println("Give the accommodation's type:");
+            name[n] = sc.nextLine();
+            System.out.println("Give the accommodation's price:");
+            price[n] = Integer.parseInt(sc.nextLine());
+            System.out.println("Give the size of the accommodation (to mm^2):");
+            size[n] = Integer.parseInt(sc.nextLine());
+            System.out.println("Type with yes or no if the accommodation has parking or no");
+            parking[n] = sc.nextLine();
+            System.out.println("Type with yes or no if the accommodation has wifi or no");
+            wifi[n] = sc.nextLine();
+            System.out.println("Type your name: ");
+            providers_name[n] = sc.nextLine();
+            System.out.println("\t\t\t\tΗ καταχώρηση πραγματοποιήθηκε επιτυχώς!");
+        }
+
+        for (int i = 0; i < price.length; i ++) {
+            String rooms="C:\\Users\\evabr\\Desktop\\accommodations.txt";
+            WriteToFile("\n",rooms);
+            WriteToFile(name[i],rooms);
+            WriteToFile("\n",rooms);
+            WriteToFile("price : ",rooms);
+            WriteToFile_2(price[i], rooms);
+            WriteToFile("\n", rooms);
+            WriteToFile("size : ",rooms);
+            WriteToFile_2(size[i], rooms);
+            WriteToFile("\n", rooms);
+            WriteToFile("wifi - " + wifi[i], rooms);
+            WriteToFile("\n",rooms);
+            WriteToFile("parking - " + parking[i] + " ", rooms);
+            WriteToFile("\n", rooms);
+            WriteToFile("provider's name : " + providers_name[i],rooms);
+            WriteToFile("\n",rooms);
+        }
+    }
+
+
+
+
+    public static void main(String[] args) throws IOException {
+
+
+        //Main.in_out();
+        Main.Register_Login();
+        //Main.addFile();
+        Main.options();
+
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+package com.company;
+import java.util.*;
+/**
+ * This class represents a Provider
+ */
+
+class Provider {
+
+    private String ProviderName;
+    private String ProviderPassword="1234";
+    private String ProviderAddress;
+    private int IncomingMessages;
+    private int Accommodations;
+    private int Cancels;
+    private int Reservations;
+
+    public Provider()
+    {
+
+    };
+
+    /**
+     * Constructor that initialize the Admin's username and password
+     *
+     * @param ProviderName     Provider's name
+     * @param ProviderPassword Provider's password
+     */
+
+
+    //Getters
+
+    /**
+     * @return the Provider's incoming messages
+     */
+
+    public int getIncomingMessages(){return IncomingMessages;}
+
+    /**
+     * @return the Provider's name
+     */
+    public String getProviderName(){return this.ProviderName;}
+
+    /**
+     * @return the Provider's address
+     */
+    public String getProviderAddress(){return this.ProviderAddress;}
+
+
+
+    //Setters
+
+    public void setProviderName(String username){this.ProviderName = username;}
+    /**
+     * This function sets the Provider's incoming messages
+     *
+     * @param IncomingMessages Provider's incoming messages
+     */
+
+    public void setIncomingMessages(int IncomingMessages){this.IncomingMessages = IncomingMessages;}
+
+    /**
+     * This function sets the Provider's address
+     *
+     * @param ProviderAddress Provider's address
+     */
+
+    public void setCustomerAddress(String ProviderAddress){this.ProviderAddress = ProviderAddress;}
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+package com.company;
+import java.util.*;
+
+/**
+ * This class represents a customer.
+ */
+
+class Customer {
+
+    private final String CustomerName="peter";
+    private final String CustomerPassword="12345";
+    private String CustomerAddress;
+    private int IncomingMessages;
+    private int Cancels;
+    private int Reservations;
+
+    /**
+     * Constructor that initialize the customer's username and password
+     * @param CustomerName customer's username
+     * @param CustomerPassword customer's password
+     */
+
+    public Customer(String CustomerName, String CustomerPassword){};
+
+    /**
+     * This function creates a new object of the class Customer
+     */
+
+    Customer z = new Customer("peter","12345");
+
+    //Getters
+
+    /** @return customer's password */
+    public String getCustomerPassword(){return CustomerPassword;}
+    /** @return customer's messages */
+    public int getIncomingMessages(){return IncomingMessages;}
+    /** @return customer's cancels */
+    public int getCancels(){return Cancels;}
+    /** @return customer's username */
+    public String getCustomerName(){return this.CustomerName;}
+    /** @return customer's address */
+    public String getCustomerAddress(){return this.CustomerAddress;}
+
+
+    //Setters
+
+    /**
+     * This function sets the customer's incoming messages
+     * @param IncomingMessages customer's Incoming Messages*/
+    public void setIncomingMessages(int IncomingMessages){this.IncomingMessages = IncomingMessages;}
+
+    /**
+     * This function sets the customer's address
+     * @param CustomerAddress customer's address*/
+    public void setCustomerAddress(String CustomerAddress){this.CustomerAddress = CustomerAddress;}
+
+    /**
+     * This function sets the customer's cancels
+     * @param Cancels customer's cancels
+     */
+    public void setCancels(int Cancels){this.Cancels = Cancels;}
+
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+package com.company;
+import java.io.IOException;
+import java.util.*;
+
+
+/**
+ * This class represents the Accommodations.
+ */
+public class Accommodation {
+
+
+
+    public static void addFile() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("flat 50 250 false 10 true");
+        list.add("room 100 200 true 5 false");
+        list.add("maisonette 300 800 true 9 false");
+        list.add("flat 150 200 false 3 false");
+
+        String MinPrice = "300";
+
+        for (int i = 0, len = list.size(); i < len; i++) {
+            String line = list.get(i);
+            String[] splitted = line.split("[ ]");
+            if(splitted[1].equals(MinPrice)){
+                System.out.println(splitted[0]);
+            }
+        }
+    }
+
+
+
+
+    private boolean Wifi;
+    private boolean Parking;
+    private float SqMeters;
+    private int Price;
+    private int Availability;
+    private int Reservations;
+
+
+    /**
+     * Default Constructor
+     */
+    public Accommodation() {
+
+    }
+
+    /**
+     * Constructor that initialize Accommodation with all its parameters
+     *
+     * @param Wifi         checks if the accommodation has wi-fi or no
+     * @param Parking      checks if the accommodation has parking or no
+     * @param mm           size of the accommodation
+     * @param Price        price of the accommodation
+     * @param Availability the days which the accommodation will be available
+     * @param Reservations the number of the reservations in this Accommodation
+     */
+    public Accommodation(boolean Wifi, boolean Parking, float mm, int Price, int Availability, int Reservations) {
+        this.Wifi = Wifi;
+        this.Parking = Parking;
+        this.SqMeters = mm;
+        this.Price = Price;
+        this.Availability = Availability;
+        this.Reservations = Reservations;
+
+    }
+
+    //getters
+
+    /**
+     * @return the price of the accommodation
+     */
+    public int getPrice() {
+        return Price;
+    }
+
+    /**
+     * @return the size of the accommodation
+     */
+    public float getSqMeters() {
+        return this.SqMeters;
+    }
+
+    /**
+     * @return the days which the accommodation is available
+     */
+    public int getAvailability() {
+        return this.Availability;
+    }
+
+    /**
+     * @return the number of the accommodation's reservations
+     */
+    public int getReservations() {
+        return this.Reservations;
+    }
+
+    /**
+     * @return if the accommodation has wi-fi
+     */
+    public boolean hasWifi() {
+        return this.Wifi;
+    }
+
+    /**
+     * @return if the accommodation has parking
+     */
+    public boolean hasParking() {
+        return this.Parking;
+    }
+
+    //setters
+
+    /**
+     * This function checks if the accommodation has parking
+     *
+     * @param parking accommodation's parking
+     */
+    public void setParking(boolean parking) {
+        this.Parking = parking;
+    }
+
+    public void setReservations(int amount)
+    {
+        this.Reservations=+amount;
+    }
+
+    public void setAvailability(int availability)
+    {
+        this.Availability=availability;
+    }
+    /**
+     * This function checks if the accommodation has wi-fi
+     *
+     * @param wifi accommodation's wi-fi
+     */
+    public void setWifi(boolean wifi) {
+        this.Wifi = wifi;
+    }
+
+    /**
+     * This function sets the accommodation's price
+     *
+     * @param Price accommodation's price
+     */
+    public void setPrice(int Price) {
+        this.Price = Price;
+    }
+
+    /**
+     * This function sets the accommodation's size
+     *
+     * @param SqMeters accommodation's size
+     */
+    public void setSqMeters(int SqMeters) {
+        this.SqMeters = SqMeters;
+    }
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import java.util.*;
+
+/**
+ * This class represents an Admin
+ */
+
+public class Admin {
+
+    private String AdminName = "mike";
+    private String AdminPassword = "123";
+
+
+    /**
+     * Constructor that initialize the Admin's username and password
+     *
+     * @param AdminName     Admin's name
+     * @param AdminPassword Admin's password
+     */
+
+    public Admin(String AdminName, String AdminPassword) {
+    }
+
+    /**
+     * This function creates a new object of the class Admin
+     */
+
+    Admin y = new Admin("mike", "12");
+
+
+    //Getters
+
+    /**
+     * @return the Admin's name
+     */
+
+    public String getAdminName() {
+        return AdminName;
+    }
+
+    /**
+     * @return the Admin's password
+     */
+
+    public String getAdminPassword() {
+        return AdminPassword;
+    }
+
+    //Setters
+
+    /**
+     * This function sets the Admin's username
+     *
+     * @param adminName Admin's username
+     */
+
+    public void setAdminName(String adminName) {
+        this.AdminName = adminName;
+    }
+
+    /**
+     * This function sets the Admin's password
+     *
+     * @param adminPassword Admin's password
+     */
+
+    public void setAdminPassword(String adminPassword) {
+        this.AdminPassword = adminPassword;
+    }
+}
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
